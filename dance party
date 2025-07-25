@@ -1,0 +1,144 @@
+import pygame
+import sys
+import os
+
+# ------------------ [1] Initialize Pygame and Screen ------------------
+pygame.init()
+
+WIDTH, HEIGHT = 600, 400
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Dance Party!")
+
+BG_COLOR = (30, 30, 60)
+clock = pygame.time.Clock()
+
+# ------------------ [2] Load and Resize Images ------------------
+def load_image(path, fallback_color):
+    if os.path.exists(path):
+        image = pygame.image.load(path)
+        return pygame.transform.scale(image, (100, 100))
+    else:
+        # Use a colored square if image file is missing
+        fallback = pygame.Surface((100, 100))
+        fallback.fill(fallback_color)
+        return fallback
+
+robot_img = load_image("robot.png", (180, 180, 180))
+cat_img = load_image("cat.png", (255, 180, 0))
+rabbit_img = load_image("rabbit.png", (255, 255, 255))
+
+#  Music Categories
+soca_songs = ["cyah change", "savannah grass", "Carnival Soca 2021"]
+pharrell_songs = ["Happy", "freedom", "Blurred Lines"]
+demonhunter_songs={"golden","your idol","free"}
+gnarly_songs = ["Gnarly Track 1", "Gnarly Track 2", "Gnarly Track 3"]
+
+#  Animate the Dancer 
+def animate_dancer(image, style):
+    x = WIDTH // 2 - 50
+    y = HEIGHT // 2 - 50
+
+    for i in range(6):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        screen.fill(BG_COLOR)
+
+        if style == "robot dance":
+            move_x = 20 if i % 2 == 0 else -20
+            screen.blit(image, (x + move_x, y))
+        elif style == "cat dance":
+            move_y = -20 if i % 2 == 0 else 20
+            screen.blit(image, (x, y + move_y))
+        elif style == "hop dance":
+            move_y = -30 if i % 2 == 0 else 30
+            screen.blit(image, (x, y + move_y))
+        else:
+            screen.blit(image, (x, y))
+
+        pygame.display.flip()
+        clock.tick(3)
+
+#  Choose Functions 
+def choose_dancer():
+    print("\n🎭 Choose a Dancer:")
+    print("1. Robot")
+    print("2. Cat")
+    print("3. Rabbit")
+    choice = input("Enter number: ")
+    if choice == "1":
+        return robot_img, "Robot"
+    elif choice == "2":
+        return cat_img, "Cat"
+    elif choice == "3":
+        return rabbit_img, "Rabbit"
+    else:
+        print("Invalid choice. Defaulting to Robot.")
+        return robot_img, "Robot"
+
+def choose_dance():
+    print("\n💃 Choose a Dance Style:")
+    print("1. Robot Dance")
+    print("2. Cat Dance")
+    print("3. Hop Dance")
+    choice = input("Enter number: ")
+    if choice == "1":
+        return "robot dance"
+    elif choice == "2":
+        return "cat dance"
+    elif choice == "3":
+        return "hop dance"
+    else:
+        print("Invalid choice. Defaulting to robot dance.")
+        return "robot dance"
+
+def choose_music_category():
+    print("\n🎵 Choose a Music Category:")
+    print("1. Soca Medleys")
+    print("2. Pharrell Williams")
+    print("3. demonhunter")
+    print("4. Gnarly")
+    choice = input("Enter number: ")
+    if choice == "1":
+        return "Soca Medleys", soca_songs
+    elif choice == "2":
+        return "Pharrell Williams", pharrell_songs
+    elif choice == "3":
+        return "kpop demon hunter", demonhunter_songs
+    elif choice == "4":
+        return "Gnarly", gnarly_songs
+    else:
+        print("Invalid choice. Defaulting to Soca Medleys.")
+        return "Soca Medleys", soca_songs
+
+# Main Dance Party Loop 
+def dance_party():
+    print("🎉 Welcome to the Dance Party! 🎉")
+    while True:
+        music_category, songs = choose_music_category()
+        print(f"\nYou chose: {music_category}")
+        print("Songs:")
+        for song in songs:
+            print(" -", song)
+
+        dancer_img, dancer_name = choose_dancer()
+        style = choose_dance()
+        print(f"\n{dancer_name} is doing the {style}!\n")
+
+        animate_dancer(dancer_img, style)
+
+        again = input("Dance again? (y/n): ").lower()
+        if again != 'y':
+            print("👋 Thanks for dancing! Goodbye!")
+            pygame.quit()
+            sys.exit()
+#Run the Program
+if __name__ == "__main__":
+    dance_party()
+
+            
+
+
+
